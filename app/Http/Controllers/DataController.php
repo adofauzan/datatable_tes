@@ -14,31 +14,43 @@ class DataController
     }
 
     public function getData(Request $request)
-    {
-        $search = $request->input('search.value');
-        $start = $request->input('start');
-        $length = $request->input('length');
+{
+    $search = $request->input('search.value');
+    $start = $request->input('start');
+    $length = $request->input('length');
 
-        $query = Data::query();
+    // Sorting
+    $orderColumnIndex = $request->input('order.0.column');
+    $orderDirection = $request->input('order.0.dir');
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
+    // Match column index to actual column names in your table
+    $columns = ['id', 'name', 'email']; // Adjust to match your table columns
+    $orderColumn = $columns[$orderColumnIndex] ?? 'id'; // Default to 'id' if index invalid
 
-        $total = $query->count();
+    $query = Data::query();
 
-        $data = $query->offset($start)
-                      ->limit($length)
-                      ->get();
-
-        return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => Data::count(),
-            'recordsFiltered' => $total,
-            'data' => $data,
-        ]);
+    // Filtering
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+
+    $total = $query->count();
+
+    // Apply sorting, pagination
+    $data = $query->orderBy($orderColumn, $orderDirection)
+                  ->offset($start)
+                  ->limit($length)
+                  ->get();
+
+    return response()->json([
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => Data::count(),
+        'recordsFiltered' => $total,
+        'data' => $data,
+    ]);
+}
+
 }

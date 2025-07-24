@@ -36,11 +36,7 @@
                     lengthMenu: [3, 5, 10],
                     ajax: "/users/data",
                     columns: [
-                        {
-                            data: null,
-                            render: (data, type, row, meta) =>
-                                meta.row + meta.settings._iDisplayStart + 1,
-                        },
+                        { data: 'id'},
                         { data: "name" },
                         { data: "email" },
                     ],
