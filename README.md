@@ -21,8 +21,9 @@ A simple Laravel application that displays a server-side jQuery datatable.
 ## Getting Started
 
 ### 1. Install dependencies
-
-`composer install`
+```
+composer install
+```
 
 ### 2. Create and configure .env
 
@@ -39,8 +40,9 @@ php artisan db:seed
 ```
 
 ### 4. Run the development server
-
-`composer run dev`
+```
+composer run dev
+```
 
 ## License
 
